@@ -20,3 +20,6 @@ create a `cypress.env.json` to put your testing `username` and `password`:
     "password": "<password>"
 }
 ```
+## Create new test
+Create new test inside `cypress/e2e/...`,  
+use `cy.starLogin()` or `cy.oqbLogin()` for specific test you needed.
