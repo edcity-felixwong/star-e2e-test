@@ -1,0 +1,19 @@
+{
+  "name": "star-e2e-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.7.0",
+    "cypress-network-idle": "^1.14.2",
+    "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "^2.15.1",
+    "typescript": "^5.4.2"
+  }
+}
