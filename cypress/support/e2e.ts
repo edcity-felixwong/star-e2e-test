@@ -20,15 +20,17 @@ import "cypress-network-idle";
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { oqbLogin, starLogin } from "./login";
+import { oqbLogin, starLogin, starDevLogin } from "./login";
 
 declare global {
   namespace Cypress {
     interface Chainable {
       oqbLogin: typeof oqbLogin;
       starLogin: typeof starLogin;
+      starDevLogin: typeof starDevLogin;
     }
   }
 }
 Cypress.Commands.add("oqbLogin", oqbLogin);
 Cypress.Commands.add("starLogin", starLogin);
+Cypress.Commands.add("starDevLogin", starDevLogin);

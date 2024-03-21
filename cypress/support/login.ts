@@ -5,11 +5,11 @@ type LoginFn = (username: string, password: string) => void;
 /**
  * lower level login function for different platform
  */
-function _login(loginUrl: string, options?: Cypress.SessionOptions): LoginFn {
+function _login(loginUrl: string, options?: Cypress.SessionOptions) {
   return (username: string, password: string) => {
     if (!username) throw new Error("Please enter a username");
     if (!password) throw new Error("Please enter a password");
-    cy.session(
+    return cy.session(
       [username],
       () => {
         /** Append the cookie `TGC` for CAS */
@@ -58,7 +58,7 @@ function _login(loginUrl: string, options?: Cypress.SessionOptions): LoginFn {
   };
 }
 
-export const oqbLogin: LoginFn = _login(
+export const oqbLogin = _login(
   "https://wapps1.hkedcity.net/cas/login?service=https%3A%2F%2Fwapps1.hkedcity.net%2Fcas%2Foauth2.0%2FcallbackAuthorize%3Fclient_id%3DOqb%26redirect_uri%3Dhttps%253A%252F%252Foqb.hkedcity.net%252F%26response_type%3Dcode%26state%3Db8ddb983f74779d8813e91ad30c7fa96%26client_name%3DCasOAuthClient",
   {
     validate: () => {
@@ -68,7 +68,7 @@ export const oqbLogin: LoginFn = _login(
     },
   }
 );
-export const starLogin: LoginFn = _login(
+export const starLogin = _login(
   "https://wapps1.hkedcity.net/cas/login?service=https://e.star.hkedcity.net/",
   {
     validate: () => {
@@ -79,3 +79,32 @@ export const starLogin: LoginFn = _login(
     },
   }
 );
+export const starDevLogin = (username: string, password: string) => {
+  _login(
+    "https://wapps1.dev.hkedcity.net/cas/login?service=https://e.star.dev.hkedcity.net/",
+    {
+      validate: () => {
+        cy.request("https://e.star.dev.hkedcity.net/jwt.php")
+          .its("body")
+          .then((_) => _.result)
+          .should("not.equal", null);
+      },
+    }
+  )(username, password).then(() => {
+    cy.getCookie("PHPSESSID", { domain: "e.star.dev.hkedcity.net" }).then(
+      (c) => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(
+              cy.setCookie("PHPSESSID", c.value, {
+                ...c,
+                secure: true,
+                sameSite: "no_restriction",
+              })
+            );
+          });
+        });
+      }
+    );
+  });
+};
